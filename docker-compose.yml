@@ -1,0 +1,54 @@
+version: '3.8'
+
+services:
+  api-gateway:
+    build:
+      context: .
+      dockerfile: services/api-gateway/Dockerfile
+    ports:
+      - "8080:8080"
+    environment:
+      - PORT=8080
+    depends_on:
+      - user-service
+      - product-service
+      - order-service
+    networks:
+      - gomall-network
+
+  user-service:
+    build:
+      context: .
+      dockerfile: services/user-service/Dockerfile
+    ports:
+      - "8081:8081"
+    environment:
+      - PORT=8081
+    networks:
+      - gomall-network
+
+  product-service:
+    build:
+      context: .
+      dockerfile: services/product-service/Dockerfile
+    ports:
+      - "8082:8082"
+    environment:
+      - PORT=8082
+    networks:
+      - gomall-network
+
+  order-service:
+    build:
+      context: .
+      dockerfile: services/order-service/Dockerfile
+    ports:
+      - "8083:8083"
+    environment:
+      - PORT=8083
+    networks:
+      - gomall-network
+
+networks:
+  gomall-network:
+    driver: bridge
