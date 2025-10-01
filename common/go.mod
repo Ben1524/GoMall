@@ -1,4 +1,4 @@
-module GoMall/common
+module github.com/Ben1524/GoMall/common  // 修正为完整路径
 
 go 1.25.1
 
