@@ -76,7 +76,11 @@ func (g *APIGateway) handleUserRoutes(w http.ResponseWriter, r *http.Request) {
 	case "/api/login":
 		g.proxyRequest(g.userServiceURL+"/login", w, r)
 	case "/api/user":
-		g.proxyRequest(g.userServiceURL+"/user"+r.URL.RawQuery, w, r)
+		query := ""
+		if r.URL.RawQuery != "" {
+			query = "?" + r.URL.RawQuery
+		}
+		g.proxyRequest(g.userServiceURL+"/user"+query, w, r)
 	case "/api/users":
 		g.proxyRequest(g.userServiceURL+"/users", w, r)
 	default:
