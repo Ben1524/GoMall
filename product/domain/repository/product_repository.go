@@ -7,37 +7,39 @@ import (
 
 	"github.com/jinzhu/gorm"
 )
-type IProductRepository interface{
-    InitTable() error
-    FindProductByID(int64) (*model.Product, error)
+
+type IProductRepository interface {
+	InitTable() error
+	FindProductByID(int64) (*model.Product, error)
 	CreateProduct(*model.Product) (int64, error)
 	DeleteManyProductByIDs(...int64) error
 	DeleteProductByID(int64) error
 	UpdateProduct(*model.Product) error
-	FindAll()([]model.Product,error)
-
+	FindAll() ([]model.Product, error)
 }
-//创建productRepository
-func NewProductRepository(db *gorm.DB) IProductRepository  {
-	return &ProductRepository{mysqlDb:db}
+
+// 创建productRepository
+func NewProductRepository(db *gorm.DB) IProductRepository {
+	return &ProductRepository{mysqlDb: db}
 }
 
 type ProductRepository struct {
 	mysqlDb *gorm.DB
 }
 
-//初始化表
-func (u *ProductRepository)InitTable() error  {
-	return u.mysqlDb.CreateTable(&model.Product{},&model.ProductSeo{},&model.ProductImage{},&model.ProductSize{}).Error
+// 初始化表
+func (u *ProductRepository) InitTable() error {
+	// AutoMigrate会自动创建表、缺失的外键、约束、列和索引，CreateTable只会创建表
+	return u.mysqlDb.AutoMigrate(&model.Product{}, &model.ProductSeo{}, &model.ProductImage{}, &model.ProductSize{}).Error
 }
 
-//根据ID查找Product信息
-func (u *ProductRepository)FindProductByID(productID int64) (product *model.Product,err error) {
+// 根据ID查找Product信息
+func (u *ProductRepository) FindProductByID(productID int64) (product *model.Product, err error) {
 	product = &model.Product{}
-	return product, u.mysqlDb.Preload("ProductImage").Preload("ProductSize").Preload("ProductSeo").First(product,productID).Error
+	return product, u.mysqlDb.Preload("ProductImage").Preload("ProductSize").Preload("ProductSeo").First(product, productID).Error
 }
 
-//创建Product信息
+// 创建Product信息
 func (u *ProductRepository) CreateProduct(product *model.Product) (int64, error) {
 	return product.ID, u.mysqlDb.Create(product).Error
 }
@@ -70,7 +72,7 @@ func (u *ProductRepository) DeleteManyProductByIDs(productIDs ...int64) error {
 		slog.Error("删除产品图片失败", "productIDs", productIDs, "error", err.Error())
 		return err
 	}
-	
+
 	if err := deleteWithTx("size_product_id IN (?)", &model.ProductSize{}); err != nil {
 		slog.Error("删除产品尺寸失败", "productIDs", productIDs, "error", err.Error())
 		return err
@@ -79,7 +81,7 @@ func (u *ProductRepository) DeleteManyProductByIDs(productIDs ...int64) error {
 		slog.Error("删除产品SEO信息失败", "productIDs", productIDs, "error", err.Error())
 		return err
 	}
-	
+
 	// 2. 最后删除主表产品
 	if err := deleteWithTx("id IN (?)", &model.Product{}); err != nil {
 		slog.Error("删除产品主表失败", "productIDs", productIDs, "error", err.Error())
@@ -152,13 +154,12 @@ func (u *ProductRepository) DeleteProductByID(productID int64) error {
 	return nil
 }
 
-//更新Product信息
+// 更新Product信息
 func (u *ProductRepository) UpdateProduct(product *model.Product) error {
 	return u.mysqlDb.Model(product).Update(product).Error
 }
 
-//获取结果集
-func (u *ProductRepository) FindAll()(productAll []model.Product,err error) {
+// 获取结果集
+func (u *ProductRepository) FindAll() (productAll []model.Product, err error) {
 	return productAll, u.mysqlDb.Preload("ProductImage").Preload("ProductSize").Preload("ProductSeo").Find(&productAll).Error
 }
-

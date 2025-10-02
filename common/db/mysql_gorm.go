@@ -2,12 +2,11 @@ package db
 
 import (
 	"fmt"
-	"log/slog"
-	"strconv"
-
 	"github.com/Ben1524/GoMall/common/config"
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/mysql"
+	"log/slog"
+	"strconv"
 )
 
 func NewMysqlGorm(cfg *config.Config) (db *gorm.DB, err error) {

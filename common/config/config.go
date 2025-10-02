@@ -24,7 +24,6 @@ var defaultConfigCandidates = []string{
 	"config.yml",
 }
 
-
 // Config 定义应用的所有配置项，支持 YAML 与环境变量加载。
 type Config struct {
 	Server   ServerConfig   `json:"server" yaml:"server" mapstructure:"server"`
@@ -47,6 +46,7 @@ type ServerConfig struct {
 	ReadTimeout  time.Duration `json:"read_timeout" yaml:"read_timeout" mapstructure:"read_timeout"`
 	WriteTimeout time.Duration `json:"write_timeout" yaml:"write_timeout" mapstructure:"write_timeout"`
 	IdleTimeout  time.Duration `json:"idle_timeout" yaml:"idle_timeout" mapstructure:"idle_timeout"`
+	ServiceName  string        `json:"service_name" yaml:"service_name" mapstructure:"service_name"`
 }
 
 // DatabaseConfig 数据库配置
@@ -114,11 +114,12 @@ type EtcdConfig struct {
 
 // JaegerConfig 链路追踪配置
 type JaegerConfig struct {
-	Enabled     bool    `json:"enabled" yaml:"enabled" mapstructure:"enabled"`
-	Host        string  `json:"host" yaml:"host" mapstructure:"host"`
-	Port        string  `json:"port" yaml:"port" mapstructure:"port"`
-	ServiceName string  `json:"service_name" yaml:"service_name" mapstructure:"service_name"`
-	SampleRate  float64 `json:"sample_rate" yaml:"sample_rate" mapstructure:"sample_rate"`
+	Enabled    bool    `json:"enabled" yaml:"enabled" mapstructure:"enabled"`
+	Deployment string  `json:"deployment" yaml:"deployment" mapstructure:"deployment"`
+	Host       string  `json:"host" yaml:"host" mapstructure:"host"`
+	Port       string  `json:"port" yaml:"port" mapstructure:"port"`
+	SampleRate float64 `json:"sample_rate" yaml:"sample_rate" mapstructure:"sample_rate"`
+	UseTLS     bool    `json:"use_tls" yaml:"use_tls" mapstructure:"use_tls"`
 }
 
 // MetricsConfig 监控指标配置
