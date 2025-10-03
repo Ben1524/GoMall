@@ -104,9 +104,7 @@ func main() {
 	slog.Info("服务初始化完成")
 
 	// 注册处理器
-	if err := pb.RegisterProductHandler(service.Server(), &handler.Product{
-		ProductDataService: productSvc,
-	}); err != nil {
+	if err := pb.RegisterProductHandler(service.Server(), handler.NewProductHandler(productSvc)); err != nil {
 		slog.Error("注册产品处理器失败", "error", err)
 		os.Exit(1)
 	}

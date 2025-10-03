@@ -3,20 +3,54 @@ package handler
 import (
 	"context"
 	"fmt"
-	common "github.com/Ben1524/GoMall/common/utils"
 	"product/domain/model"
 	"product/domain/service"
 	. "product/proto/product"
+
+	common "github.com/Ben1524/GoMall/common/utils"
+	"go.opentelemetry.io/otel"
+	"go.opentelemetry.io/otel/attribute"
+	"go.opentelemetry.io/otel/trace"
 )
 
 type Product struct {
 	ProductDataService service.IProductDataService
+	tracer             trace.Tracer // 新增：用于创建span的tracer
+}
+
+// 初始化handler时，创建唯一的tracer
+func NewProductHandler(service service.IProductDataService) *Product {
+	return &Product{
+		ProductDataService: service,
+		// 定义tracer名称（建议包含服务名和组件名，确保唯一）
+		tracer: otel.Tracer("product/handler", trace.WithInstrumentationVersion("v1.0.0")),
+	}
+}
+
+// 根据ID查找商品
+func (h *Product) FindProductByID(ctx context.Context, request *RequestID, response *ProductInfo) error {
+	ctx, span := h.tracer.Start(ctx, "FindProductByID",
+		trace.WithAttributes(
+			attribute.Int64("product.id", request.ProductId),
+		),
+	)
+	defer span.End()
+
+	productData, err := h.ProductDataService.FindProductByID(request.ProductId)
+	if err != nil {
+		span.RecordError(err)
+		return err
+	}
+	if err := common.SwapTo(productData, response); err != nil {
+		span.RecordError(err)
+		return err
+	}
+	return nil
 }
 
 // 添加商品
 func (h *Product) AddProduct(ctx context.Context, request *ProductInfo, response *ResponseProduct) error {
 	productAdd := &model.Product{}
-	fmt.Println(request)
 	if err := common.SwapTo(request, productAdd); err != nil {
 		return err
 	}
@@ -26,18 +60,6 @@ func (h *Product) AddProduct(ctx context.Context, request *ProductInfo, response
 		return err
 	}
 	response.ProductId = productID
-	return nil
-}
-
-// 根据ID查找商品
-func (h *Product) FindProductByID(ctx context.Context, request *RequestID, response *ProductInfo) error {
-	productData, err := h.ProductDataService.FindProductByID(request.ProductId)
-	if err != nil {
-		return err
-	}
-	if err := common.SwapTo(productData, response); err != nil {
-		return err
-	}
 	return nil
 }
 

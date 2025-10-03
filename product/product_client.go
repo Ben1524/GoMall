@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"fmt"
 	"log/slog"
 	"os"
 	"os/signal"
@@ -72,8 +73,24 @@ func main() {
 	productClient = pb.NewProductService("go.micro.service.product", service.Client())
 
 	// 运行实际的测试函数
-	AddProduct()
+	FindProductById(1)
+	//AddProduct()
 
+}
+
+func FindProductById(id int64) {
+	// 调用服务
+	request := &pb.RequestID{
+		ProductId: id,
+	}
+	response, err := productClient.FindProductByID(context.Background(), request)
+	if err != nil {
+		// 使用t.Fatal报告错误（会终止当前测试函数）
+		panic(err)
+	}
+
+	// 可以添加断言逻辑（如检查response是否符合预期）
+	fmt.Println(response)
 }
 
 // 实际测试函数：测试AddProduct接口
