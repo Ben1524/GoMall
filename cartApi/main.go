@@ -136,12 +136,12 @@ func NewCircuitBreaker(name string) client.Wrapper {
 func main() {
 	breakerName := "cartApi"
 
-	cfg, err := config.Load("config.example.yaml")
+	cfg, err := config.Load("D:\\GolandProjects\\GoMall\\cartApi\\config.example.yaml")
 	if err != nil {
 		slog.Error("config加载失败", "error", err)
 		panic(err)
 	}
-	slog.Info("config加载成功", "path", "cart/config.example.yaml")
+	slog.Info("config加载成功", "path", "cartApi/config.example.yaml")
 
 	startMetricsServer(cfg.Metrics.Host, cfg.Metrics.Port)
 
@@ -166,12 +166,24 @@ func main() {
 
 	// 创建服务
 	consulRegistry := consul.NewConsulRegistry(registry.Addrs("127.0.0.1:8500"))
+	consulRegistry.Register(&registry.Service{
+		Name: cfg.Server.ServiceName,
+		Nodes: []*registry.Node{
+			{
+				Metadata: map[string]string{
+					"prometheus-monitor": "true",     // 必须和Prometheus的过滤规则匹配
+					"service-type":       "go-micro", // 可选，自定义标签
+				},
+				Address: cfg.Metrics.Host + ":" + cfg.Metrics.Port,
+			}},
+	})
 	service := micro.NewService(
 		micro.Name(cfg.Server.ServiceName),
 		micro.WrapClient(NewCircuitBreaker(breakerName)),   // 自定义熔断器中间件
 		micro.WrapClient(opentelemetry.NewClientWrapper()), // 只作为调用方，不会触发被调用逻辑
 		micro.Registry(consulRegistry),
 	)
+
 	service.Init()
 
 	cartSrv := cart.NewCartService("go.micro.service.cart", service.Client())
