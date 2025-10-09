@@ -53,6 +53,8 @@ type LogstashHandler struct {
 	isClosed     atomic.Bool            // 是否已关闭（原子操作）
 }
 
+var defaultLogger atomic.Pointer[slog.Logger]
+
 // newLogstashHandler 创建修复后的处理器
 func newLogstashHandler(config Config) (*LogstashHandler, error) {
 	// 1. 设置默认配置
@@ -383,4 +385,27 @@ func NewDefaultLogger(address string) (*slog.Logger, error) {
 		BatchMaxWait: 200 * time.Millisecond,
 	}
 	return NewLogger(config)
+}
+
+func init() {
+	defaultLogger.Store(slog.New(slog.NewTextHandler(nil, &slog.HandlerOptions{Level: slog.LevelInfo})))
+	slog.Info("Default logger initialized")
+}
+
+func Info(msg string, val ...any) {
+	defaultLogger.Load().Info(msg, val...)
+	slog.Info(msg, val...)
+}
+func Error(msg string, val ...any) {
+	defaultLogger.Load().Error(msg, val...)
+	slog.Error(msg, val...)
+}
+func Debug(msg string, val ...any) {
+	defaultLogger.Load().Debug(msg, val...)
+	slog.Debug(msg, val...)
+}
+
+func Warn(msg string, val ...any) {
+	defaultLogger.Load().Warn(msg, val...)
+	slog.Warn(msg, val...)
 }
