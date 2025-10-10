@@ -1,0 +1,5 @@
+# logstash/config/logstash.yml
+http.host: "0.0.0.0"
+xpack.monitoring.enabled: false  # 关闭监控（若不需要）
+path.config: "/usr/share/logstash/pipeline/*.conf"  # 管道配置文件路径（对应容器内挂载的 pipeline 目录）
+path.logs: "/usr/share/logstash/logs"  # 日志输出路径

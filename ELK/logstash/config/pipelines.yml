@@ -1,0 +1,4 @@
+# logstash/config/pipelines.yml
+- pipeline.id: main  # 管道ID（自定义，如 main、app-log 等）
+  path.config: "/usr/share/logstash/pipeline/logstash.conf"  # 指向你编写的管道配置文件
+  pipeline.workers: 2  # 工作线程数（可根据机器性能调整）
