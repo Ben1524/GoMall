@@ -2,11 +2,13 @@ package db
 
 import (
 	"fmt"
-	"github.com/Ben1524/GoMall/common/config"
-	_ "github.com/jinzhu/gorm/dialects/mysql"
-	"gorm.io/gorm"
 	"log/slog"
 	"strconv"
+
+	"github.com/Ben1524/GoMall/common/config"
+	_ "github.com/jinzhu/gorm/dialects/mysql"
+	"gorm.io/driver/mysql"
+	"gorm.io/gorm"
 )
 
 func NewMysqlGorm(cfg *config.Config) (db *gorm.DB, err error) {
@@ -26,7 +28,7 @@ func NewMysqlGorm(cfg *config.Config) (db *gorm.DB, err error) {
 	)
 	slog.Info("mysql dsn", slog.String("dsn", dsn))
 	//"user:password@tcp(
-	db, err = gorm.Open("mysql", dsn)
+	db, err = gorm.Open(mysql.Open(dsn), &gorm.Config{})
 	if err != nil {
 		slog.Error("mysql connect err", slog.String("dsn", dsn))
 		panic(err)
