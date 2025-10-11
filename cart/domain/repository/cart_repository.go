@@ -4,7 +4,7 @@ import (
 	"cart/domain/model"
 	"errors"
 
-	"github.com/jinzhu/gorm"
+	"gorm.io/gorm"
 )
 
 type ICartRepository interface {

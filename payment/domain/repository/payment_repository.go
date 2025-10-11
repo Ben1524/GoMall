@@ -1,7 +1,7 @@
 package repository
 
 import (
-	"github.com/jinzhu/gorm"
+	"gorm.io/gorm"
 	"payment/domain/model"
 )
 

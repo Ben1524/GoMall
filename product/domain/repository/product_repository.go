@@ -5,7 +5,7 @@ import (
 	"log/slog"
 	"product/domain/model"
 
-	"github.com/jinzhu/gorm"
+	"gorm.io/gorm"
 )
 
 type IProductRepository interface {

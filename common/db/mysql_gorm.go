@@ -3,8 +3,8 @@ package db
 import (
 	"fmt"
 	"github.com/Ben1524/GoMall/common/config"
-	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/mysql"
+	"gorm.io/gorm"
 	"log/slog"
 	"strconv"
 )

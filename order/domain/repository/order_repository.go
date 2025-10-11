@@ -4,7 +4,7 @@ import (
 	"errors"
 	"order/domain/model"
 
-	"github.com/jinzhu/gorm"
+	"gorm.io/gorm"
 )
 
 type IOrderRepository interface {
