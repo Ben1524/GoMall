@@ -1,9 +1,10 @@
-package model
+package product
 
 type ProductImage struct {
-	ID int64 `gorm:"primary_key;not_null;auto_increment" json:"id"`
-	ImageName string `json:"image_name"`
-	ImageCode string `gorm:"unique_index;not_null" json:"image_code"`
-	ImageUrl string `json:"image_url"`
-	ImageProductID int64 `json:"image_product_id"`
+	ID             int64  `gorm:"primary_key;not_null;auto_increment" json:"id"`
+	ImageName      string `json:"image_name"`
+	ImageCode      string `gorm:"unique_index;not_null" json:"image_code"`
+	ImageUrl       string `json:"image_url"`
+	ImageProductID int64  `json:"image_product_id"`
+	IsPrimary      bool   `json:"is_primary"` // 是否为主图
 }

@@ -28,7 +28,7 @@ var defaultConfigCandidates = []string{
 type Config struct {
 	Server   ServerConfig   `json:"server" yaml:"server" mapstructure:"server"`
 	Database DatabaseConfig `json:"database" yaml:"database" mapstructure:"database"`
-	Redis    RedisConfig    `json:"redis" yaml:"redis" mapstructure:"redis"`
+	Redis    RedisConfig    `json:"redis_cache" yaml:"redis_cache" mapstructure:"redis_cache"`
 	JWT      JWTConfig      `json:"jwt" yaml:"jwt" mapstructure:"jwt"`
 	Log      LogConfig      `json:"log" yaml:"log" mapstructure:"log"`
 	RabbitMQ RabbitMQConfig `json:"rabbitmq" yaml:"rabbitmq" mapstructure:"rabbitmq"`
@@ -235,15 +235,15 @@ func applyDefaults(v *viper.Viper) {
 	v.SetDefault("database.max_idle_conns", 10)
 	v.SetDefault("database.conn_max_lifetime", time.Hour)
 
-	v.SetDefault("redis.host", "localhost")
-	v.SetDefault("redis.port", "6379")
-	v.SetDefault("redis.password", "")
-	v.SetDefault("redis.database", 0)
-	v.SetDefault("redis.pool_size", 100)
-	v.SetDefault("redis.min_idle_conns", 10)
-	v.SetDefault("redis.dial_timeout", 5*time.Second)
-	v.SetDefault("redis.read_timeout", 3*time.Second)
-	v.SetDefault("redis.write_timeout", 3*time.Second)
+	v.SetDefault("redis_cache.host", "localhost")
+	v.SetDefault("redis_cache.port", "6379")
+	v.SetDefault("redis_cache.password", "")
+	v.SetDefault("redis_cache.database", 0)
+	v.SetDefault("redis_cache.pool_size", 100)
+	v.SetDefault("redis_cache.min_idle_conns", 10)
+	v.SetDefault("redis_cache.dial_timeout", 5*time.Second)
+	v.SetDefault("redis_cache.read_timeout", 3*time.Second)
+	v.SetDefault("redis_cache.write_timeout", 3*time.Second)
 
 	v.SetDefault("jwt.secret", "your-jwt-secret-key")
 	v.SetDefault("jwt.access_expiration", 15*time.Minute)

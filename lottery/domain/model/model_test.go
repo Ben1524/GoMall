@@ -29,7 +29,7 @@ func init() {
 		panic("连接测试数据库失败: " + err.Error())
 	}
 
-	testDB.AutoMigrate(&LotteryAward{}, &LotteryActivity{})
+	testDB.AutoMigrate(&LotteryActivity{}, &LotteryAward{})
 
 }
 
@@ -37,7 +37,7 @@ func init() {
 func TestUniqueConstraints(t *testing.T) {
 	// 准备测试数据
 	product := product.Product{ProductName: "测试商品", ProductSku: "TEST_SKU_001"}
-	//testDB.Create(&product)
+	testDB.Create(&product)
 
 	activity := LotteryActivity{
 		ActivityName: "测试活动",
@@ -47,11 +47,15 @@ func TestUniqueConstraints(t *testing.T) {
 	}
 	testDB.Create(&activity)
 
+	testDB.Find(&product).First(&product)
+
+	sizeID1 := int64(3)
+
 	// 测试1: 同一活动添加相同产品+规格的奖品（应触发唯一约束）
 	award1 := LotteryAward{
 		ActivityID:    activity.ID,
 		ProductID:     product.ID,
-		ProductSizeID: nil,
+		ProductSizeID: &sizeID1,
 		Probability:   10,
 		TotalQuantity: 100,
 	}
@@ -59,11 +63,13 @@ func TestUniqueConstraints(t *testing.T) {
 		t.Fatal("创建第一个奖品失败: " + err.Error())
 	}
 
+	sizeID2 := int64(3)
+
 	// 重复添加相同奖品
 	award2 := LotteryAward{
 		ActivityID:    activity.ID,
 		ProductID:     product.ID,
-		ProductSizeID: nil,
+		ProductSizeID: &sizeID2, // 假设规格ID为1
 		Probability:   20,
 		TotalQuantity: 50,
 	}

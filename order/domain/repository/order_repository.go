@@ -29,7 +29,7 @@ type OrderRepository struct {
 
 // 初始化表
 func (u *OrderRepository) InitTable() error {
-	return u.mysqlDb.AutoMigrate(&model.Order{}, &model.OrderDetail{}).Error
+	return u.mysqlDb.AutoMigrate(&model.Order{}, &model.OrderDetail{})
 }
 
 // 根据ID查找Order信息
@@ -74,7 +74,7 @@ func (u *OrderRepository) DeleteOrderByID(orderID int64) error {
 
 // 更新Order信息
 func (u *OrderRepository) UpdateOrder(order *model.Order) error {
-	return u.mysqlDb.Model(order).Update(order).Error
+	return u.mysqlDb.Model(order).Updates(order).Error
 }
 
 // 获取结果集

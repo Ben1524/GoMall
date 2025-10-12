@@ -1,0 +1,70 @@
+syntax = "proto3";
+
+package lottery;
+
+option go_package = "./proto;lottery";
+
+// Lottery 抽奖服务定义
+service Lottery {
+	// 参与抽奖
+	rpc Participate(ParticipateRequest) returns (ParticipateResponse) {}
+	// 查询活动列表（可根据状态过滤）
+	rpc ListActivities(ListActivitiesRequest) returns (ListActivitiesResponse) {}
+	// 查询某活动下的奖项列表
+	rpc ListAwards(ListAwardsRequest) returns (ListAwardsResponse) {}
+}
+
+// 抽奖活动
+message Activity {
+	int64 id = 1;
+	string name = 2;
+	string description = 3;
+	int64 start_time = 4; // unix seconds
+	int64 end_time = 5;   // unix seconds
+	int32 status = 6;     // 0 未开始 1 进行中 2 已结束
+}
+
+// 奖项
+message Award {
+	// 标识与内聚字段（供服务间调用与持久化）
+	int64 id = 1;
+	int64 activity_id = 2;
+	int64 product_id = 3;
+	int64 product_size_id = 4;
+	double probability = 5;
+	int64 remaining = 6;
+
+  string product_name = 7;   // 商品名称
+  string product_image = 8;  // 商品图片
+  string product_size = 9;   // 商品规格
+  double product_price = 10; // 商品价格
+}
+
+message ParticipateRequest {
+	int64 activity_id = 1;
+	int64 user_id = 2;
+}
+
+message ParticipateResponse {
+	bool success = 1;
+	string message = 2;
+	// 命中则返回奖项信息
+	Award award = 3;
+}
+
+message ListActivitiesRequest {
+	// 可选：按状态过滤，-1 表示全部
+	int32 status = 1;
+}
+
+message ListActivitiesResponse {
+	repeated Activity activities = 1;
+}
+
+message ListAwardsRequest {
+	int64 activity_id = 1;
+}
+
+message ListAwardsResponse {
+	repeated Award awards = 1;
+}

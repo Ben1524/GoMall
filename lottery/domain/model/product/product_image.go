@@ -6,4 +6,5 @@ type ProductImage struct {
 	ImageCode      string `gorm:"unique_index;not_null" json:"image_code"`
 	ImageUrl       string `json:"image_url"`
 	ImageProductID int64  `json:"image_product_id"`
+	IsPrimary      bool   `json:"is_primary"` // 是否为主图
 }
