@@ -136,12 +136,16 @@ func NewCircuitBreaker(name string) client.Wrapper {
 func main() {
 	breakerName := "cartApi"
 
-	cfg, err := config.Load("D:\\GolandProjects\\GoMall\\cartApi\\config.example.yaml")
+	cfgPath := os.Getenv("CONFIG_PATH")
+	if cfgPath == "" {
+		cfgPath = "cartApi/config.example.yaml"
+	}
+	cfg, err := config.Load(cfgPath)
 	if err != nil {
 		slog.Error("config加载失败", "error", err)
 		panic(err)
 	}
-	slog.Info("config加载成功", "path", "cartApi/config.example.yaml")
+	slog.Info("config加载成功", "path", cfgPath)
 
 	startMetricsServer(cfg.Metrics.Host, cfg.Metrics.Port)
 
@@ -164,8 +168,13 @@ func main() {
 		}
 	}()
 
-	// 创建服务
-	consulRegistry := consul.NewConsulRegistry(registry.Addrs("127.0.0.1:8500"))
+	// 初始化Consul注册中心，从 CONSUL_ADDR 环境变量读取，回退到 consul:8500
+	consulAddr := os.Getenv("CONSUL_ADDR")
+	if consulAddr == "" {
+		consulAddr = "consul:8500"
+	}
+	consulRegistry := consul.NewConsulRegistry(registry.Addrs(consulAddr))
+
 	consulRegistry.Register(&registry.Service{
 		Name: cfg.Server.ServiceName,
 		Nodes: []*registry.Node{

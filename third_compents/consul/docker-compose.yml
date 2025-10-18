@@ -1,0 +1,62 @@
+version: "3.8"
+
+services:
+  consul1:
+    image: consul:1.14
+    container_name: consul1
+    command: agent -server -ui -bind=0.0.0.0 -client=0.0.0.0 -bootstrap-expect=3 -config-file=/consul/config/server.json
+    volumes:
+      - ./config/server.json:/consul/config/server.json:ro
+      - consul1-data:/consul/data
+    ports:
+      - "8500:8500"  # HTTP API / UI
+      - "8600:8600/udp" # DNS
+    networks:
+      - consul-net
+      gomall-net:
+        aliases:
+          - consul
+
+  consul2:
+    image: consul:1.14
+    container_name: consul2
+    command: agent -server -bind=0.0.0.0 -client=0.0.0.0 -bootstrap-expect=3 -config-file=/consul/config/server.json
+    volumes:
+      - ./config/server.json:/consul/config/server.json:ro
+      - consul2-data:/consul/data
+    networks:
+      - consul-net
+      - gomall-net
+
+  consul3:
+    image: consul:1.14
+    container_name: consul3
+    command: agent -server -bind=0.0.0.0 -client=0.0.0.0 -bootstrap-expect=3 -config-file=/consul/config/server.json
+    volumes:
+      - ./config/server.json:/consul/config/server.json:ro
+      - consul3-data:/consul/data
+    networks:
+      - consul-net
+      - gomall-net
+
+# Optional lightweight consul client (for local dev/testing services that want an agent)
+  consul-client:
+    image: consul:1.14
+    container_name: consul-client
+    command: agent -bind=0.0.0.0 -client=0.0.0.0 -config-file=/consul/config/client.json
+    volumes:
+      - ./config/client.json:/consul/config/client.json:ro
+    networks:
+      - consul-net
+      - gomall-net
+
+volumes:
+  consul1-data:
+  consul2-data:
+  consul3-data:
+
+networks:
+  consul-net:
+    driver: bridge
+  gomall-net:
+    external: true

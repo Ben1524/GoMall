@@ -51,12 +51,23 @@ func NewNonBlockingLimiter(qps int) server.HandlerWrapper {
 }
 
 func main() {
-	cfg, err := config.Load("D:\\GolandProjects\\GoMall\\order\\config.example.yaml")
+	cfgPath := os.Getenv("CONFIG_PATH")
+	if cfgPath == "" {
+		cfgPath = "order/config.example.yaml"
+	}
+	cfg, err := config.Load(cfgPath)
 	if err != nil {
 		slog.Error("config加载失败", "error", err)
 		panic(err)
 	}
-	slog.Info("config加载成功", "path", "order/config.example.yaml")
+	slog.Info("config加载成功", "path", cfgPath)
+
+	// consul address from env
+	consulAddr := os.Getenv("CONSUL_ADDR")
+	if consulAddr == "" {
+		consulAddr = "consul:8500"
+	}
+	consulRegistry := consul.NewConsulRegistry(registry.Addrs(consulAddr))
 
 	promMetrics := metrics.New(cfg.Server.ServiceName, cfg.Metrics.Enabled)
 	if cfg.Metrics.Enabled {
@@ -104,8 +115,6 @@ func main() {
 	}
 
 	orderService := srv.NewOrderDataService(orderRepository)
-
-	consulRegistry := consul.NewConsulRegistry(registry.Addrs("127.0.0.1:8500"))
 
 	slog.Info(cfg.Metrics.Host + ":" + cfg.Metrics.Port)
 

@@ -1,0 +1,23 @@
+server:
+  host: 0.0.0.0
+  port: "8080"
+  mode: debug
+  service_name: go.micro.service.product
+database:
+  host: mysql
+  port: "3306"
+  username: root
+  password: "123456"
+  database: ecommerce
+redis:
+  host: redis
+  port: "6379"
+jaeger:
+  enabled: false
+  host: jaeger
+  port: "4317"
+metrics:
+  enabled: true
+  host: 0.0.0.0
+  port: "9103"
+

@@ -2,7 +2,7 @@ module lottery
 
 go 1.25.1
 
-replace github.com/Ben1524/GoMall/common => ../common
+
 
 require (
 	//github.com/Ben1524/GoMall/common v0.0.0-20251011040335-92893d2244f7
@@ -12,7 +12,7 @@ require (
 	gorm.io/gorm v1.31.0
 )
 
-require github.com/Ben1524/GoMall/common v0.0.0-00010101000000-000000000000
+require github.com/Ben1524/GoMall/common v0.0.0-20251011040335-92893d2244f7
 
 require (
 	github.com/bytedance/gopkg v0.1.3 // indirect

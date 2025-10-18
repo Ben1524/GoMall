@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"log/slog"
+	"os"
 	"web/router"
 
 	cfgpkg "github.com/Ben1524/GoMall/common/config"
@@ -13,17 +14,25 @@ import (
 )
 
 func main() {
-
-	// 初始化微服务网关
-	// 加载配置
-	cfg, err := cfgpkg.Load("D:\\GolandProjects\\GoMall\\web\\config.example.yaml")
+	// load config from CONFIG_PATH or default
+	cfgPath := os.Getenv("CONFIG_PATH")
+	if cfgPath == "" {
+		cfgPath = "web/config.example.yaml"
+	}
+	cfg, err := cfgpkg.Load(cfgPath)
 	if err != nil {
 		slog.Error("load config", "err", err)
 		panic(err)
 	}
 
+	// consul address from env CONSUL_ADDR or default to consul:8500 (docker-compose service name)
+	consulAddr := os.Getenv("CONSUL_ADDR")
+	if consulAddr == "" {
+		consulAddr = "consul:8500"
+	}
+	consulReg := consul.NewConsulRegistry(registry.Addrs(consulAddr))
+
 	// 微服务
-	consulReg := consul.NewConsulRegistry(registry.Addrs("127.0.0.1:8500"))
 	srv := micro.NewService(
 		micro.Name(cfg.Server.ServiceName),
 		micro.Registry(consulReg),

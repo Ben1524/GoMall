@@ -52,8 +52,12 @@ func main() {
 	}()
 
 	// 初始化Consul注册中心
+	consulAddr := os.Getenv("CONSUL_ADDR")
+	if consulAddr == "" {
+		consulAddr = "consul:8500"
+	}
 	consulRegistry := consul.NewConsulRegistry(
-		registry.Addrs("127.0.0.1:8500"), // 简化注册中心地址配置
+		registry.Addrs(consulAddr),
 	)
 
 	// 创建微服务实例

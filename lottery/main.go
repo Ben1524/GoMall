@@ -3,6 +3,8 @@ package main
 import (
 	"context"
 	"log/slog"
+	"os"
+
 	pb "lottery/proto/lottery"
 
 	cfgpkg "github.com/Ben1524/GoMall/common/config"
@@ -20,8 +22,11 @@ import (
 )
 
 func main() {
-	// 加载配置
-	cfg, err := cfgpkg.Load("D:\\GolandProjects\\GoMall\\lottery\\config.example.yaml")
+	cfgPath := os.Getenv("CONFIG_PATH")
+	if cfgPath == "" {
+		cfgPath = "lottery/config.example.yaml"
+	}
+	cfg, err := cfgpkg.Load(cfgPath)
 	if err != nil {
 		slog.Error("load config", "err", err)
 		panic(err)
@@ -49,7 +54,11 @@ func main() {
 	svc.InitActivityCache(context.Background(), 20)
 
 	// 微服务
-	consulReg := consul.NewConsulRegistry(registry.Addrs("127.0.0.1:8500"))
+	consulAddr := os.Getenv("CONSUL_ADDR")
+	if consulAddr == "" {
+		consulAddr = "consul:8500"
+	}
+	consulReg := consul.NewConsulRegistry(registry.Addrs(consulAddr))
 	srv := micro.NewService(
 		micro.Name(cfg.Server.ServiceName),
 		micro.Registry(consulReg),

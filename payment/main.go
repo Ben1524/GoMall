@@ -51,7 +51,11 @@ func NewNonBlockingLimiter(qps int) server.HandlerWrapper {
 }
 
 func main() {
-	cfg, err := config.Load("D:\\GolandProjects\\GoMall\\payment\\config.example.yaml")
+	cfgPath := os.Getenv("CONFIG_PATH")
+	if cfgPath == "" {
+		cfgPath = "payment/config.example.yaml"
+	}
+	cfg, err := config.Load(cfgPath)
 	if err != nil {
 		slog.Error("config加载失败", "error", err)
 		panic(err)
@@ -105,7 +109,12 @@ func main() {
 
 	paymentService := srv.NewPaymentDataService(paymentRepository)
 
-	consulRegistry := consul.NewConsulRegistry(registry.Addrs("127.0.0.1:8500"))
+	// consul address from env
+	consulAddr := os.Getenv("CONSUL_ADDR")
+	if consulAddr == "" {
+		consulAddr = "consul:8500"
+	}
+	consulRegistry := consul.NewConsulRegistry(registry.Addrs(consulAddr))
 
 	slog.Info(cfg.Metrics.Host + ":" + cfg.Metrics.Port)
 
@@ -118,8 +127,7 @@ func main() {
 					"service-type":       "go-micro", // 可选，自定义标签
 				},
 				Address: cfg.Metrics.Host + ":" + cfg.Metrics.Port,
-			}},
-	})
+			}}})
 
 	handlerWrappers := []server.HandlerWrapper{
 		ratelimit.NewHandlerWrapper(qps, ratelimit3.WithSlack(3*qps)),

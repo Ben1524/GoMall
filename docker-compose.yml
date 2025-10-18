@@ -1,0 +1,133 @@
+version: "3.8"
+
+services:
+  web:
+    build:
+      context: ./web
+      dockerfile: Dockerfile
+    environment:
+      - CONFIG_PATH=/app/web/config.example.yaml
+      - CONSUL_ADDR=consul:8500
+    volumes:
+      - ./docker-configs/web.yaml:/app/web/config.example.yaml:ro
+    ports:
+      - "8080:8080"
+    networks:
+      - gomall-net
+
+  product:
+    build:
+      context: ./product
+      dockerfile: Dockerfile
+    environment:
+      - CONFIG_PATH=/app/product/config.example.yaml
+      - CONSUL_ADDR=consul:8500
+    ports:
+      - "8081:8081"
+    volumes:
+      - ./docker-configs/product.yaml:/app/product/config.example.yaml:ro
+    networks:
+      - gomall-net
+
+  user:
+    build:
+      context: ./user
+      dockerfile: Dockerfile
+    environment:
+      - CONFIG_PATH=/app/user/config.example.yaml
+      - CONSUL_ADDR=consul:8500
+    ports:
+      - "8082:8082"
+    volumes:
+      - ./docker-configs/user.yaml:/app/user/config.example.yaml:ro
+    networks:
+      - gomall-net
+
+  lottery:
+    build:
+      context: ./lottery
+      dockerfile: Dockerfile
+    environment:
+      - CONFIG_PATH=/app/lottery/config.example.yaml
+      - CONSUL_ADDR=consul:8500
+    volumes:
+      - ./docker-configs/lottery.yaml:/app/lottery/config.example.yaml:ro
+    ports:
+      - "8083:8083"
+    networks:
+      - gomall-net
+
+  cart:
+    build:
+      context: ./cart
+      dockerfile: Dockerfile
+    environment:
+      - CONFIG_PATH=/app/cart/config.example.yaml
+      - CONSUL_ADDR=consul:8500
+    volumes:
+      - ./docker-configs/cart.yaml:/app/cart/config.example.yaml:ro
+    ports:
+      - "8084:8084"
+    networks:
+      - gomall-net
+
+  cartapi:
+    build:
+      context: ./cartApi
+      dockerfile: Dockerfile
+    environment:
+      - CONFIG_PATH=/app/cartApi/config.example.yaml
+      - CONSUL_ADDR=consul:8500
+    volumes:
+      - ./docker-configs/cartApi.yaml:/app/cartApi/config.example.yaml:ro
+    ports:
+      - "8085:8085"
+    networks:
+      - gomall-net
+
+  payment:
+    build:
+      context: ./payment
+      dockerfile: Dockerfile
+    environment:
+      - CONFIG_PATH=/app/payment/config.example.yaml
+      - CONSUL_ADDR=consul:8500
+    ports:
+      - "8086:8086"
+    volumes:
+      - ./docker-configs/payment.yaml:/app/payment/config.example.yaml:ro
+    networks:
+      - gomall-net
+
+  paymentapi:
+    build:
+      context: ./paymentApi
+      dockerfile: Dockerfile
+    environment:
+      - CONFIG_PATH=/app/paymentApi/config.example.yaml
+      - CONSUL_ADDR=consul:8500
+    volumes:
+      - ./docker-configs/paymentApi.yaml:/app/paymentApi/config.example.yaml:ro
+    ports:
+      - "8087:8087"
+    networks:
+      - gomall-net
+
+  order:
+    build:
+      context: ./order
+      dockerfile: Dockerfile
+    environment:
+      - CONFIG_PATH=/app/order/config.example.yaml
+      - CONSUL_ADDR=consul:8500
+    ports:
+      - "8088:8088"
+    volumes:
+      - ./docker-configs/order.yaml:/app/order/config.example.yaml:ro
+    networks:
+      - gomall-net
+
+
+networks:
+  gomall-net:
+    external: true

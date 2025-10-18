@@ -24,13 +24,17 @@ var productClient pb.ProductService
 // TestMain 用于初始化测试环境
 func main() {
 
-	// 加载配置文件
-	config, err := common.Load("D:\\GolandProjects\\GoMall\\product\\config.example.yaml")
+	// 加载配置文件，从 CONFIG_PATH 环境变量读取，默认使用相对路径
+	cfgPath := os.Getenv("CONFIG_PATH")
+	if cfgPath == "" {
+		cfgPath = "product/config.example.yaml"
+	}
+	config, err := common.Load(cfgPath)
 	if err != nil {
 		slog.Error("加载配置文件失败", "error", err)
 		os.Exit(1)
 	}
-	slog.Info("配置文件加载成功", "path", "product/config.example.yaml")
+	slog.Info("配置文件加载成功", "path", cfgPath)
 
 	// 初始化上下文，支持优雅退出
 	ctx, stop := signal.NotifyContext(context.Background(),
@@ -53,9 +57,13 @@ func main() {
 		}
 	}()
 
-	// 初始化Consul注册中心
+	// 初始化Consul注册中心，从 CONSUL_ADDR 环境变量读取，回退到 consul:8500
+	consulAddr := os.Getenv("CONSUL_ADDR")
+	if consulAddr == "" {
+		consulAddr = "consul:8500"
+	}
 	consulRegistry := consul.NewConsulRegistry(
-		registry.Addrs("127.0.0.1:8500"),
+		registry.Addrs(consulAddr),
 	)
 
 	// 创建微服务实例

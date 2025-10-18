@@ -3,18 +3,15 @@ module cart
 go 1.25.1
 
 require (
-	github.com/Ben1524/GoMall/common v0.0.0-00010101000000-000000000000
-	github.com/jinzhu/gorm v1.9.16
+	github.com/Ben1524/GoMall/common v0.0.0-20251011040335-92893d2244f7
 	github.com/micro/plugins/v5/wrapper/ratelimiter/uber v1.0.2
 	go-micro.dev/v5 v5.9.0
 	go.opentelemetry.io/otel v1.38.0
 	go.opentelemetry.io/otel/trace v1.38.0
 	go.uber.org/ratelimit v0.2.0
 	golang.org/x/time v0.11.0
-	google.golang.org/protobuf v1.36.10
+	gorm.io/gorm v1.31.0
 )
-
-replace github.com/Ben1524/GoMall/common => ../common
 
 require (
 	filippo.io/edwards25519 v1.1.0 // indirect
@@ -53,7 +50,9 @@ require (
 	github.com/hashicorp/hcl v1.0.0 // indirect
 	github.com/hashicorp/serf v0.10.1 // indirect
 	github.com/imdario/mergo v0.3.13 // indirect
+	github.com/jinzhu/gorm v1.9.16 // indirect
 	github.com/jinzhu/inflection v1.0.0 // indirect
+	github.com/jinzhu/now v1.1.5 // indirect
 	github.com/klauspost/compress v1.18.0 // indirect
 	github.com/klauspost/cpuid/v2 v2.2.9 // indirect
 	github.com/lib/pq v1.10.9 // indirect
@@ -108,6 +107,7 @@ require (
 	google.golang.org/genproto/googleapis/api v0.0.0-20250825161204-c5933d9347a5 // indirect
 	google.golang.org/genproto/googleapis/rpc v0.0.0-20250825161204-c5933d9347a5 // indirect
 	google.golang.org/grpc v1.75.0 // indirect
+	google.golang.org/protobuf v1.36.10 // indirect
 	gopkg.in/ini.v1 v1.67.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )

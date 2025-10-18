@@ -3,13 +3,13 @@ module product
 go 1.25.1
 
 //source latest => target latest
-replace github.com/Ben1524/GoMall/common => ../common
+
 
 //github.com/Ben1524/GoMall/common v0.0.0-20251002062843-fd399dab579c
 require go-micro.dev/v5 v5.9.0
 
 require (
-	github.com/Ben1524/GoMall/common v0.0.0-00010101000000-000000000000
+	github.com/Ben1524/GoMall/common v0.0.0-20251011040335-92893d2244f7
 	go.opentelemetry.io/otel/sdk v1.38.0
 )
 

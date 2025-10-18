@@ -1,0 +1,8 @@
+.git
+**/.git
+**/vendor
+**/node_modules
+*.log
+Dockerfile
+.dockerignore
+
